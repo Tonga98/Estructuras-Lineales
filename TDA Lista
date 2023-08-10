@@ -1,0 +1,277 @@
+//CLASE NODO LISTA
+
+public class Nodo {
+    //Atributos
+    private Object elemento;
+    private Nodo enlace;
+
+    //Constructor
+    public Nodo(Object elElemento, Nodo elEnlace){
+        this.elemento = elElemento;
+        this.enlace = elEnlace;
+    }
+    //Observadores
+    public Object getElemento(){
+        return this.elemento;
+    }
+    public Nodo getEnlace(){
+        return this.enlace;
+    }
+
+    //Modificadores
+    public void setEnlace(Nodo elEnlace){
+        this.enlace = elEnlace;
+    }
+    public void setElemento(Object elElemento){
+        this.elemento = elElemento;
+    }
+}
+
+//CLASE LISTA
+public class Lista {
+
+    //Atributos
+    private Nodo cabecera;
+    private int cantElem;
+
+    //Constructor
+    public Lista(){
+        this.cabecera = null;
+        this.cantElem = 0;
+    }
+
+    //De tipo
+    public boolean insertar(Object elemento, int pos){
+        //Este metodo inserta el elemento recibido en la posicion recibida
+
+        //Declaracion de variables
+        Nodo aux = this.cabecera, nuevo;
+        boolean exito = true;
+        int i=1;
+
+        //Asignacion de variables y ejecucion
+        if (pos < 1 || pos > this.cantElem + 1){
+            exito = false;
+        }else{
+            if (pos == 1){
+                this.cabecera = new Nodo(elemento,this.cabecera);
+                this.cantElem++;
+            }else{
+                while(i < pos-1){
+                    aux = aux.getEnlace();
+                    i++;
+                }
+                nuevo = new Nodo (elemento, aux.getEnlace());
+                aux.setEnlace(nuevo);
+                this.cantElem++;
+            }
+        }
+        return exito;
+    }
+    public int longitud(){
+        //Este modulo retorna la longitud de la lista
+
+        return this.cantElem;
+    }
+    public boolean eliminar(int pos){
+        //Este metodo elimina el elemento en la posicion recibida
+
+        //Declaracion de variables
+        Nodo aux = this.cabecera;
+        int i=1;
+        boolean exito = true;
+
+        //Asignacion de variables y ejecucion
+        if(this.cantElem==0 || pos > this.cantElem || pos <= 0){
+            exito = false;
+        }else {
+            if (pos == 1) {
+                this.cabecera = this.cabecera.getEnlace();
+                this.cantElem--;
+            } else {
+                while (i < pos - 1) {
+                    aux = aux.getEnlace();
+                    i++;
+                }
+                aux.setEnlace(aux.getEnlace().getEnlace());
+                this.cantElem--;
+            }
+        }
+        return exito;
+    }
+    public Object recuperar(int pos){
+        //Este metodo retorna el elemento en la posicion recibida
+
+        //Declaracion de variables
+        int i=1;
+        Object elemento;
+        Nodo aux = this.cabecera;
+
+        //Asignacion de variables y ejecucion
+        if(pos > this.cantElem || pos <= 0){
+            elemento = null;
+        }else{
+            while (i < pos) {
+                    aux = aux.getEnlace();
+                    i++;
+                }
+                elemento = aux.getElemento();
+        }
+        return elemento;
+    }
+    public int localizar(Object elemento){
+        //Este metodo localiza y retorna la posicion del objecto recibido
+
+        //Declaracion de variables
+        int pos=-1;
+        Nodo aux = this.cabecera;
+        boolean encontrado=false;
+
+        //Asignacion de variables y ejecucion
+        if(this.cantElem > 0){
+            pos = 1;
+            do{
+                if(aux.getElemento() == elemento){
+                    encontrado = true;
+                }else{
+                    aux = aux.getEnlace();
+                    pos++;
+                }
+            }while(pos<=this.cantElem && !encontrado);
+            if(!encontrado){
+                pos = -1;
+            }
+        }
+        return pos;
+    }
+    public void vaciar(){
+        //Este metodo vacia la lista
+        this.cantElem = 0;
+        this.cabecera = null;
+    }
+    public boolean esVacia(){
+        //Este metodo retorna true si la lista esta vacia o false en caso contrario
+        return (this.cabecera == null);
+    }
+    public String toString(){
+        //Este metodo retorna un String con los elementos de la lista
+
+        //Declaracion de variables
+        String aString="";
+        int i;
+        Nodo aux=this.cabecera;
+
+        //Declaracion de variables
+        if(this.cantElem == 0){
+            aString = "Lista vacia";
+        }else {
+            for (i = 1; i <= this.cantElem; i++) {
+                aString = aString + aux.getElemento() + ",";
+                aux = aux.getEnlace();
+            }
+            aString = aString.substring(0, aString.length()-1);
+        }
+        return aString;
+    }
+    public Lista clone(){
+        //Este metodo retorna un clon de la lista original
+
+        //Declaracion de variables
+        int i;
+        Lista listaClon = new Lista();
+        Nodo aux = this.cabecera, nuevo, aux2= new Nodo(aux.getElemento(), null);
+
+        //Asignacion de variables y ejecucion
+        if(!this.esVacia()) {
+            listaClon.cabecera = aux2;
+            nuevo = listaClon.cabecera;
+            aux = aux.getEnlace();
+            for (i = 1; i < this.cantElem; i++) {
+                aux2 = new Nodo(aux.getElemento(), null);
+                nuevo.setEnlace(aux2);
+                nuevo = nuevo.getEnlace();
+                aux = aux.getEnlace();
+            }
+            listaClon.cantElem = this.cantElem;
+        }
+
+        return listaClon;
+    }
+    public void invertir(){
+        //Este modulo invierte la lista original
+
+        //Declaracion de variables
+
+        //Asignacion de variables y ejecucion
+        this.cabecera=invertirAux(this.cabecera);  //If es vacia si o si!
+    }
+    public Nodo invertirAux(Nodo nodoAux){
+        //Este modulo invierte la lista original
+
+        //Declaracion de variables
+        Nodo nuevaCabecera;  //por defecto java le pone null
+
+        //Asignacion de variables y ejecucion
+        if (nodoAux.getEnlace() == null) {
+            nuevaCabecera = nodoAux;
+        }else {
+            nuevaCabecera = invertirAux(nodoAux.getEnlace());
+            nodoAux.getEnlace().setEnlace(nodoAux);
+            nodoAux.setEnlace(null);
+        }
+        return nuevaCabecera;
+    }
+    public Lista obtenerMultiplos(int num){
+        //Declaracion
+        Lista nuevaLista = new Lista();
+        Nodo nodoAux2=null;
+
+        //asig..
+        nuevaLista = obtenerMultiplosAux(num,1,this.cabecera,nodoAux2,nuevaLista);
+        return nuevaLista;
+    }
+    private Lista obtenerMultiplosAux(int num, int posicion, Nodo nodoAux, Nodo nodoAux2, Lista nuevaLista){
+        //Ejecucion
+        if(nodoAux != null){
+            if(posicion == num){
+                nuevaLista.cabecera = new Nodo(nodoAux.getElemento(),null);
+                nodoAux2=nuevaLista.cabecera;
+                nuevaLista.cantElem++;
+            }else if((posicion != num) && (posicion % num == 0)){
+                nodoAux2.setEnlace(new Nodo(nodoAux.getElemento(),null));
+                nodoAux2 = nodoAux2.getEnlace();
+                nuevaLista.cantElem++;
+            }
+            nuevaLista=obtenerMultiplosAux(num, posicion+1,nodoAux.getEnlace(), nodoAux2, nuevaLista);
+        }
+        return nuevaLista;
+    }
+    public void eliminarApariciones(Object elemento){
+        //Este modulo elimina las repeticiiones del elemento recibido
+
+        //Ejecucion
+        eliminarAparicionesAux(this.cabecera, this.cabecera.getEnlace(), elemento);
+    }
+    private void eliminarAparicionesAux(Nodo nodoA, Nodo nodoB, Object elemento){
+        //Este metodo..
+
+        //Ejecucion
+        if(nodoB !=null){
+            if(nodoB.getElemento().equals(elemento)){
+                nodoA.setEnlace(nodoB.getEnlace());
+                nodoB = nodoB.getEnlace();
+                this.cantElem--;
+            }else{
+                nodoA = nodoA.getEnlace();
+                nodoB = nodoB.getEnlace();
+            }
+            eliminarAparicionesAux(nodoA, nodoB, elemento);
+        }else{
+            if(this.cabecera.getElemento().equals(elemento)){
+                this.cabecera=this.cabecera.getEnlace();
+                this.cantElem--;
+
+            }
+        }
+    }
+}
